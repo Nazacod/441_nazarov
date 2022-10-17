@@ -40,7 +40,7 @@ namespace NNLibrary{
                 string[] keys = { "neutral", "happiness", "surprise", "sadness", "anger", "disgust", "fear", "contempt" };
                 
                 return keys.Zip(emotions);
-            });
+            }, TaskCreationOptions.LongRunning);
         }
         public IEnumerable<(string First, float Second)> Inference(){
             using Image<Rgb24> image = Image.Load<Rgb24>("face1.png");
