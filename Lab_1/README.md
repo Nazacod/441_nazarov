@@ -1,5 +1,5 @@
-cd NNLibrary
-dotnet pack
-cd ..
-cd App
+cd NNLibrary  
+dotnet pack  
+cd ..  
+cd App  
 dotnet run

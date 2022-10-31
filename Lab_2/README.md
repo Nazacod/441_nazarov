@@ -1,5 +1,1 @@
-cd NNLibrary
-dotnet pack
-cd ..
-cd App
-dotnet run
+Для запуска программы нужно, подключить NuGet-пакет из первой лабораторной (Lab1)
