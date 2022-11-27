@@ -84,6 +84,7 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
 
                     <!--Stop-->
@@ -99,6 +100,11 @@
                     <!--Clear-->
                     <Grid Grid.Column="2">
                         <Button Content="Очистить" Name="с" Height="40" Width="90" Command="{Binding Clear, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <!--Delete-->
+                    <Grid Grid.Column="3">
+                        <Button Content="Удалить фото" Name="f" Height="40" Width="90" Command="{Binding Delete, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
                 </Grid>
             </Grid>

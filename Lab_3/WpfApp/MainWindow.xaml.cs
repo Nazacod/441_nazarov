@@ -70,6 +70,7 @@ namespace WpfApp
         public ICommand Clear { get; private set; }
         public ICommand Cancel { get; private set; }
         public ICommand ISort { get; private set; }
+        public ICommand Delete { get; private set; }
 
         public MainWindow()
         {
@@ -81,6 +82,7 @@ namespace WpfApp
             Clear = new RelayCommand(_ => { HandlerClear(this); }, CanClear);
             Cancel = new RelayCommand(_ => { HandlerCancel(this); }, CanCancel);
             ISort = new RelayCommand(_ => { HandlerSort(this); }, CanClear);
+            Delete = new RelayCommand(_ => { HandlerDelete(this); }, CanClear);
 
             //bar = 50;
             for (int i = 0; i < allEmothions.Length; i++)
@@ -203,6 +205,21 @@ namespace WpfApp
         private void HandlerCancel(object sender)
         {
             cts.Cancel();
+        }
+        private void HandlerDelete(object sender)
+        {
+            var item = outputList.SelectedItem as ImageInfo;
+            if (item == null)
+                return;
+            using (var db = new ApplicationContext())
+            {
+                var photo = db.images.Where(x => x.hash == item.hash).FirstOrDefault();
+                if (photo == null)
+                    return;
+                db.images.Remove(photo);
+                db.SaveChanges();
+                listImages.Remove(item);
+            }
         }
         private bool CanClear(object sender)
         {
