@@ -158,8 +158,9 @@ namespace Client
                     pathsImages = null;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
             }
             finally
             {
