@@ -13,7 +13,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<Server.IImagesDb>(new Server.InMemoryDb());
+builder.Services.AddSingleton<Server.IImagesDb>(new Server.DbApi());
 
 var app = builder.Build();
 

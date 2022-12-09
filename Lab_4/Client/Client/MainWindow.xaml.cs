@@ -25,12 +25,18 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Polly;
+using Polly.Retry;
+
 
 namespace Client
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private string url = "http://localhost:5254";
+
+        private AsyncRetryPolicy _RetryPolicy;
+        private int MaxRetries = 3;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -93,6 +99,9 @@ namespace Client
             //bar = 50;
             for (int i = 0; i < allEmothions.Length; i++)
                 listEmothions.Items.Add(allEmothions[i]);
+
+            _RetryPolicy = Policy.Handle<HttpRequestException>().WaitAndRetryAsync(MaxRetries, times =>
+                TimeSpan.FromMilliseconds(3000)); //3 sec
         }
 
         private void ClickedChooseImgs(object sender, RoutedEventArgs? e = null)
@@ -113,17 +122,20 @@ namespace Client
         {
             try
             {
-                var img = await File.ReadAllBytesAsync(path, ctn.Token);
+                await _RetryPolicy.ExecuteAsync(async () =>
+                {
+                    var img = await File.ReadAllBytesAsync(path, ctn.Token);
 
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri($"{url}/images");
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var response = await HttpClientJsonExtensions.PostAsJsonAsync(httpClient, "", img);
+                    var httpClient = new HttpClient();
+                    httpClient.BaseAddress = new Uri($"{url}/images");
+                    httpClient.DefaultRequestHeaders.Accept.Clear();
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var response = await HttpClientJsonExtensions.PostAsJsonAsync(httpClient, "", img);
+                });
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                throw;
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -160,29 +172,30 @@ namespace Client
         {
             try
             {
-                var httpClient = new HttpClient();
-                var response = await httpClient.GetAsync($"{url}/images");
+                await _RetryPolicy.ExecuteAsync(async () => 
+                {
+                    var httpClient = new HttpClient();
+                    var response = await httpClient.GetAsync($"{url}/images");
 
-                if (response.IsSuccessStatusCode)
-                {
-                    List<int> values = await response.Content.ReadFromJsonAsync<List<int>>();
-                    foreach (int val in values)
+                    if (response.IsSuccessStatusCode)
                     {
-                        var response_inner = await httpClient.GetAsync($"{url}/images/{val}");
-                        ImageInfo item = await response_inner.Content.ReadFromJsonAsync<ImageInfo>();
-                        listImages.Add(item);
+                        List<int> values = await response.Content.ReadFromJsonAsync<List<int>>();
+                        foreach (int val in values)
+                        {
+                            var response_inner = await httpClient.GetAsync($"{url}/images/{val}");
+                            ImageInfo item = await response_inner.Content.ReadFromJsonAsync<ImageInfo>();
+                            listImages.Add(item);
+                        }
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Not Hello!");
-                }
+                    else
+                    {
+                        MessageBox.Show("Not Hello!");
+                    }
+                });
             }
-            catch
+            catch (Exception ex)
             {
-            }
-            finally
-            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -214,15 +227,25 @@ namespace Client
         }
         private async void HandlerDelete(object sender)
         {
-            var httpClient = new HttpClient();
-            var response = await httpClient.DeleteAsync($"{url}/images");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                MessageBox.Show("OK!");
+                await _RetryPolicy.ExecuteAsync(async () =>
+                {
+                    var httpClient = new HttpClient();
+                    var response = await httpClient.DeleteAsync($"{url}/images");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("OK!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not deleted :(");
+                    }
+                });
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Not deleted :(");
+                MessageBox.Show(ex.Message);
             }
         }
         private bool CanClear(object sender)

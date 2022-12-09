@@ -19,7 +19,7 @@ namespace Server
         Task<bool> DeleteAllImages();
     }
 
-    public class InMemoryDb : IImagesDb
+    public class DbApi : IImagesDb
     {
         private NN nnModel = new NN();
         public async Task<bool> PostImage(byte[] img)
