@@ -28,7 +28,7 @@ async function clear(event) {
         wrapper.appendChild(item_wrapper)
     }
     catch (error) {
-        console.log(`error in clearAll: ${error}`)
+        console.log(`error: ${error}`)
     }
 }
 
@@ -38,7 +38,7 @@ async function select(event) {
         files.click()
     }
     catch (error) {
-        console.log(`error in clearAll: ${error}`)
+        console.log(`error: ${error}`)
     }
 }
 
@@ -66,12 +66,8 @@ async function download(event) {
             p.setAttribute('class', 'desc')
             p.innerHTML = image_info.filename
 
-            // let emotions = document.createElement('div')
-            // emotions.setAttribute('class', 'emotions')
             item_wrapper.emotions = image_info.emotions
-            // emotions.style.display = 'none'
 
-            // item_wrapper.appendChild(emotions)
             item_wrapper.appendChild(img)
             item_wrapper.appendChild(p)
 
@@ -81,7 +77,7 @@ async function download(event) {
         }
     }
     catch (error) {
-        console.log(`error in clearAll: ${error}`)
+        console.log(`error: ${error}`)
     }
 }
 
@@ -92,13 +88,11 @@ async function display_emotions(event) {
         let output_string = ''
         for (let x in emotions_target){
             output_string += emotions_target[x].name + ':' + emotions_target[x].value + '<br>'
-            // console.log(emotions_target[x].name)
-            // console.log(emotions_target[x].value)
         }
         metrics.innerHTML = output_string
     }
     catch (error) {
-        console.log(`error in clearAll: ${error}`)
+        console.log(`error: ${error}`)
     }
 }
 
@@ -129,6 +123,6 @@ async function post(event) {
         
     }
     catch (error) {
-        console.log(`error in clearAll: ${error}`)
+        console.log(`error: ${error}`)
     }
 }
