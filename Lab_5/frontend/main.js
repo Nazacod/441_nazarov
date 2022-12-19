@@ -1,16 +1,26 @@
-(function init () {
-    let b_clear = document.getElementById('b_clear')
-    b_clear.addEventListener('click', clear)
-    let b_select = document.getElementById('b_select')
-    b_select.addEventListener('click', select)
-    let b_download = document.getElementById('b_download')
-    b_download.addEventListener('click', download)
-    let b_post = document.getElementById('b_post')
-    b_post.addEventListener('click', post)
-    console.log(`Hello`)
-})()
+// (function init () {
+//     let b_clear = document.getElementById('b_clear')
+//     b_clear.addEventListener('click', clear)
+//     let b_select = document.getElementById('b_select')
+//     b_select.addEventListener('click', select)
+//     let b_download = document.getElementById('b_download')
+//     b_download.addEventListener('click', download)
+//     let b_post = document.getElementById('b_post')
+//     b_post.addEventListener('click', post)
+//     console.log(`Hello`)
+// })()
 
 var host = "http://localhost:5254"
+
+let b_clear = document.getElementById('b_clear')
+b_clear.addEventListener('click', clear)
+let b_select = document.getElementById('b_select')
+b_select.addEventListener('click', select)
+let b_download = document.getElementById('b_download')
+b_download.addEventListener('click', download)
+let b_post = document.getElementById('b_post')
+b_post.addEventListener('click', post)
+console.log(`Hello`)
 
 async function clear(event) {
     try {
